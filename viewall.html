@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#F7F2E8">
+<title>Explore | Asher</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+<style>
+:root {
+    --cream: #F7F2E8;
+    --card: #FFFCF5;
+    --green: #174735;
+    --green-dark: #103629;
+    --green-soft: #E6EEE7;
+    --gold: #D8AD55;
+    --text: #1D211D;
+    --muted: #77766E;
+    --border: #EAE3D5;
+    --s1: 8px; --s2: 16px; --s3: 24px;
+    --gutter: 22px;
+    --radius: 20px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body { background: #E8E1D4; color: var(--text); font-family: 'DM Sans', sans-serif; -webkit-font-smoothing: antialiased; }
+button, a, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+a { text-decoration: none; }
+button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+
+.app {
+    width: 100%; max-width: 430px; min-height: 100vh; margin: auto;
+    background: var(--cream); position: relative; overflow: hidden;
+    padding-bottom: 112px; box-shadow: 0 10px 45px rgba(0,0,0,.10);
+}
+/* soft glow behind the page header */
+.app::before {
+    content: ""; position: absolute; top: -120px; right: -90px;
+    width: 320px; height: 320px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(216,173,85,.20), rgba(216,173,85,0) 68%);
+    pointer-events: none;
+}
+
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.reveal { opacity: 0; animation: rise .6s cubic-bezier(.2,.7,.2,1) forwards; }
+.d1 { animation-delay: .05s; } .d2 { animation-delay: .15s; } .d3 { animation-delay: .25s; }
+
+/* HEADER */
+.header { position: relative; height: 68px; display: flex; align-items: center; justify-content: space-between; padding: 0 var(--gutter); }
+.back {
+    width: 42px; height: 42px; border: 1px solid var(--border); border-radius: 50%;
+    background: var(--card); font-size: 15px; color: #17221B;
+    display: grid; place-items: center; transition: transform .2s, box-shadow .2s;
+}
+.back:hover { transform: translateX(-2px); box-shadow: 0 4px 10px rgba(35,50,37,.10); }
+.brand { display: flex; align-items: center; gap: 9px; font-family: 'Playfair Display', serif; font-size: 27px; font-weight: 600; color: #111A14; }
+.brand i { font-size: 25px; color: var(--green); }
+.spacer { width: 42px; }
+
+/* TITLE */
+.title { position: relative; padding: var(--s2) var(--gutter) var(--s2); }
+.eyebrow { display: block; font-size: 10.5px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--green); margin-bottom: 10px; }
+.title h1 { font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 500; letter-spacing: -1px; line-height: 1.08; }
+.title h1 em { font-weight: 400; font-style: italic; }
+.title .rule { width: 34px; height: 2px; background: var(--gold); border-radius: 2px; margin: 16px 0 12px; }
+.title p { font-size: 13.5px; line-height: 1.55; color: var(--muted); max-width: 290px; }
+
+/* SEARCH */
+.search {
+    position: relative; margin: var(--s1) var(--gutter) 0;
+}
+.search i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-size: 14px; color: var(--muted); pointer-events: none; }
+.search input {
+    width: 100%; height: 50px; padding: 0 16px 0 42px;
+    background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+    font-size: 14px; transition: border-color .2s, box-shadow .2s;
+}
+.search input::placeholder { color: #9a988e; }
+.search input:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px rgba(23,71,53,.10); }
+
+/* FILTER CHIPS */
+.chips { display: flex; gap: 8px; padding: var(--s2) var(--gutter) 4px; overflow-x: auto; scrollbar-width: none; }
+.chips::-webkit-scrollbar { display: none; }
+.chip {
+    flex-shrink: 0; padding: 9px 16px; border-radius: 999px;
+    border: 1px solid var(--border); background: var(--card);
+    font-size: 12.5px; font-weight: 500; color: #3a3f39;
+    transition: background .2s, color .2s, border-color .2s;
+}
+.chip:hover { border-color: #C6BDAA; }
+.chip.on { background: var(--green); color: #fff; border-color: var(--green); }
+
+/* COUNT */
+.count { padding: var(--s2) var(--gutter) 12px; font-size: 12px; color: var(--muted); }
+.count b { color: var(--text); font-weight: 600; }
+
+/* GRID */
+.grid { padding: 0 var(--gutter); display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+
+.emotion {
+    position: relative; text-align: left;
+    display: flex; flex-direction: column; gap: 14px;
+    padding: 16px 16px 14px; min-height: 138px;
+    border: 1px solid var(--border); border-radius: 22px;
+    background: var(--card);
+    transition: transform .2s, box-shadow .2s, border-color .2s, background .2s, color .2s;
+}
+.emotion:hover { transform: translateY(-3px); border-color: #C6BDAA; box-shadow: 0 12px 20px rgba(35,50,37,.09); }
+.emotion:active { transform: scale(.98); }
+.emotion .ico { width: 46px; height: 46px; border-radius: 15px; display: grid; place-items: center; font-size: 20px; transition: background .2s, color .2s; }
+.emotion .meta { margin-top: auto; }
+.emotion .name { display: block; font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 500; line-height: 1.2; }
+.emotion .ref { display: block; margin-top: 4px; font-size: 11.5px; color: var(--muted); transition: color .2s; }
+.emotion .go {
+    position: absolute; top: 16px; right: 16px;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--cream); color: var(--muted);
+    display: grid; place-items: center; font-size: 10px;
+    transition: background .2s, color .2s, transform .2s;
+}
+.emotion:hover .go { transform: translate(2px, -2px); }
+
+.emotion.blue .ico   { background: #E7EEF1; color: #466C7C; }
+.emotion.green .ico  { background: #E6EEE7; color: #416C4B; }
+.emotion.yellow .ico { background: #F6ECD3; color: #B98628; }
+.emotion.pink .ico   { background: #F5E4E1; color: #B75A54; }
+.emotion.grey .ico   { background: #ECEBE6; color: #68716C; }
+
+.emotion.selected { background: var(--green); border-color: var(--green); color: #fff; box-shadow: 0 14px 24px rgba(23,71,53,.26); }
+.emotion.selected .ico { background: rgba(255,255,255,.16); color: #fff; }
+.emotion.selected .ref { color: #cfdcd3; }
+.emotion.selected .go { background: rgba(255,255,255,.16); color: #fff; }
+
+.empty { display: none; margin: var(--s3) var(--gutter) 0; padding: 28px 20px; text-align: center; background: var(--card); border: 1px dashed #D8CFBC; border-radius: var(--radius); }
+.empty.show { display: block; }
+.empty i { font-size: 22px; color: var(--green); margin-bottom: 10px; }
+.empty p { font-family: 'Playfair Display', serif; font-size: 16px; }
+.empty small { display: block; margin-top: 4px; color: var(--muted); font-size: 12.5px; }
+
+/* VERSE SHEET */
+.sheet {
+    position: fixed; left: 50%; bottom: 84px;
+    width: calc(100% - 2 * var(--gutter)); max-width: calc(430px - 2 * var(--gutter));
+    transform: translate(-50%, 24px); opacity: 0; pointer-events: none;
+    background: var(--card); border: 1px solid var(--border); border-radius: 22px;
+    padding: 18px 18px 16px; box-shadow: 0 18px 40px rgba(35,40,30,.22);
+    transition: transform .35s cubic-bezier(.2,.7,.2,1), opacity .3s; z-index: 25;
+}
+.sheet::before { content: ""; position: absolute; left: 18px; top: 0; width: 34px; height: 3px; border-radius: 0 0 4px 4px; background: var(--gold); }
+.sheet.show { transform: translate(-50%, 0); opacity: 1; pointer-events: auto; }
+.sheet h4 { font-size: 11px; font-weight: 600; letter-spacing: 1.4px; text-transform: uppercase; color: var(--green); margin-bottom: 8px; }
+.sheet p { font-family: 'Playfair Display', serif; font-size: 16px; line-height: 1.5; padding-right: 20px; }
+.sheet cite { display: block; margin-top: 8px; font-style: normal; font-size: 12px; color: var(--muted); }
+.sheet-close {
+    position: absolute; top: 12px; right: 12px; width: 30px; height: 30px;
+    border: none; border-radius: 50%; background: var(--cream); font-size: 12px; color: var(--muted);
+    display: grid; place-items: center;
+}
+
+/* BOTTOM NAV */
+.bottom-nav {
+    position: fixed; z-index: 20; bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 100%; max-width: 430px;
+    height: calc(72px + env(safe-area-inset-bottom)); padding-bottom: env(safe-area-inset-bottom);
+    background: rgba(255,252,245,.95); border-top: 1px solid #E9E1D4;
+    display: flex; justify-content: space-around; align-items: center;
+    -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+}
+.nav-item {
+    position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+    border: none; background: transparent; color: #777C75; min-width: 62px; height: 72px; transition: color .2s;
+}
+.nav-item i { font-size: 19px; }
+.nav-item span { font-size: 10.5px; font-weight: 500; }
+.nav-item.active { color: var(--green); }
+.nav-item.active i { font-weight: 900; }
+.nav-item.active::before { content: ""; position: absolute; top: 0; width: 26px; height: 3px; border-radius: 0 0 4px 4px; background: var(--green); }
+
+@media (max-width: 360px) { .title h1 { font-size: 32px; } .emotion { padding: 14px; min-height: 128px; } }
+@media (min-width: 600px) {
+    body { padding: 20px 0; }
+    .app { border-radius: 25px; min-height: 850px; }
+    .bottom-nav { bottom: 20px; border-radius: 0 0 25px 25px; height: 72px; }
+    .sheet { bottom: 104px; }
+}
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } .reveal { opacity: 1; } }
+</style>
+</head>
+
+<body>
+
+<main class="app">
+
+    <header class="header">
+        <a class="back" href="index.html" aria-label="Back to home"><i class="fa-solid fa-arrow-left"></i></a>
+        <div class="brand">
+            <i class="fa-brands fa-pagelines"></i>
+            <span>Asher</span>
+        </div>
+        <div class="spacer"></div>
+    </header>
+
+    <section class="title reveal d1">
+        <span class="eyebrow">Explore</span>
+        <h1>How is your <em>heart</em> today?</h1>
+        <div class="rule"></div>
+        <p>Choose what you feel and receive a word of comfort from Scripture.</p>
+    </section>
+
+    <div class="search reveal d2">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="search" id="search" placeholder="Search a feeling…" aria-label="Search feelings" autocomplete="off">
+    </div>
+
+    <div class="chips reveal d2" id="chips" role="tablist">
+        <button class="chip on" data-filter="all">All</button>
+        <button class="chip" data-filter="hard">Hard days</button>
+        <button class="chip" data-filter="seeking">Seeking</button>
+        <button class="chip" data-filter="joy">Joyful</button>
+    </div>
+
+    <div class="count reveal d2"><b id="countNum">12</b> <span id="countLabel">feelings</span></div>
+
+    <section class="grid reveal d3" id="grid">
+
+        <button class="emotion blue" data-group="hard" data-verse="Cast all your anxiety on Him, because He cares for you." data-ref="1 Peter 5:7">
+            <div class="ico"><i class="fa-solid fa-cloud"></i></div>
+            <div class="meta"><span class="name">Anxious</span><span class="ref">1 Peter 5:7</span></div>
+            <div class="go"><i class="fa-solid fa-arrow-up-right"></i></div>
+        </button>
+
+        <button class="emotion blue" data-group="hard" data-verse="The Lord is close to the brokenhearted." data-ref="Psalm 34:18">
+            <div class="ico"><i class="fa-regular fa-face-sad-tear"></i></div>
+            <div class="meta"><span class="name">Sad</span><span class="ref">Psalm 34:18</span></div>
+            <div class="go"><i class="fa-solid fa-arrow-up-right"></i></div>
+        </button>
+
+        <button class="emotion green" data-group="hard" data-verse="God sets the lonely in families." data-ref="Psalm 68:6">
+            <div class="ico"><i class="fa-solid fa-seedling"></i></div>
+            <div class="meta"><span class="name">Lonely</span><span class="ref">Psalm 68:6</span></div>
+            <div class="go"><i class="fa-solid fa-arrow-up-right"></i></div>
+        </button>
+
+        <button class="emotion yellow" data-group="joy" data-verse="Give thanks in all circumstances." data-ref="1 Thessalonians 5:18">
+            <div class="ico"><i class="fa-regular fa-star"></i></div>
+            <div class="meta"><span class="name">Grateful</span><span class="ref">1 Thessalonians 5:18</span></div>
+            <div class="go"><i class="fa-solid fa-arrow-up-right"></i></div>
+        </button>
+
+        <button class="emotion pink" data-group="hard" data-verse="A gentle answer turns away wrath." data-ref="Proverbs 15:1">
+            <div class="ico"><i class="fa-regular fa-face-frown"></i></div>
+            <div class="meta"><span class="name">Angry</span><span class="ref">Proverbs 15:1</span></div>
+            <div class="go"><i class="fa-solid fa-arrow-up-right"></i></div>
+        </button>
+
+        <button class="emotion grey" data-group="hard" data-verse="Let us not grow weary of doing good." data-ref="Galatians 6:9">
+            <div class="ico"><i class="fa-solid fa-cloud"></i></div>
+            <div class="meta"><span class="name">Discouraged</span><span class="ref">Galatians 6:9</span></div>
+            <div class="go"><i class="fa-solid fa-arrow-up-right"></i></div>
+        </button>
+
+        <button class="emotion green" data-group="seeking" data-verse="Trust in the Lord with all your heart, and He will make your paths straight." data-ref="Proverbs 3:5-6">
+            <div class="ico"><i class="fa-regular fa-sun"></i></div>
+            <div class="meta"><span class="name">Need Guidance</span><span class="ref">Proverbs 3:5-6</span></div>
+            <div class="go"><i class="fa-solid fa-arrow-up-right"></i></div>
+        </button>
+
+        <button class="emotion green" data-group="joy" data-verse="May the God of hope fill you with all joy and peace." data-ref="Romans 15:13">
+            <div class="ico"><i class="fa-solid fa-leaf"></i></div>
+            <div class="meta"><span class="name">Hopeful</span><span class="ref">Romans 15:13</span></div>
+            <div class="go"><i class="fa-solid fa-arrow-up-right"></i></div>
+        </button>
+
+        <button class="emotion blue" data-group="hard" data-verse="Be strong and courageous. Do not be afraid." data-ref="Joshua 1:9">
+            <div class="ico"><i class="fa-solid fa-shield-heart"></i></div>
+            <div class="meta"><span class="name">Afraid</span><span class="ref">Joshua 1:9</span></div>
+            <div class="go"><i class="fa-solid fa-arrow-up-right"></i></div>
+        </button>
+
+        <button class="emotion grey" data-group="hard" data-verse="Come to Me, all you who are weary, and I will give you rest." data-ref="Matthew 11:28">
+            <div class="ico"><i class="fa-solid fa-bed"></i></div>
+            <div class="meta"><span class="name">Tired</span><span class="ref">Matthew 11:28</span></div>
+            <div class="go"><i class="fa-solid fa-arrow-up-right"></i></div>
+        </button>
+
+        <button class="emotion blue" data-group="seeking" data-verse="Peace I leave with you; my peace I give you." data-ref="John 14:27">
+            <div class="ico"><i class="fa-solid fa-dove"></i></div>
+            <div class="meta"><span class="name">Need Peace</span><span class="ref">John 14:27</span></div>
+            <div class="go"><i class="fa-solid fa-arrow-up-right"></i></div>
+        </button>
+
+        <button class="emotion pink" data-group="hard" data-verse="If we confess our sins, He is faithful to forgive us." data-ref="1 John 1:9">
+            <div class="ico"><i class="fa-solid fa-hand-holding-heart"></i></div>
+            <div class="meta"><span class="name">Guilty</span><span class="ref">1 John 1:9</span></div>
+            <div class="go"><i class="fa-solid fa-arrow-up-right"></i></div>
+        </button>
+
+    </section>
+
+    <div class="empty" id="empty">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <p>No feeling found</p>
+        <small>Try a different word or choose All.</small>
+    </div>
+
+    <nav class="bottom-nav">
+        <a class="nav-item" href="index.html">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a class="nav-item active" href="viewall.html">
+            <i class="fa-solid fa-compass"></i>
+            <span>Explore</span>
+        </a>
+        <button class="nav-item">
+            <i class="fa-regular fa-bookmark"></i>
+            <span>Saved</span>
+        </button>
+        <button class="nav-item">
+            <i class="fa-regular fa-user"></i>
+            <span>Profile</span>
+        </button>
+    </nav>
+
+</main>
+
+<script>
+const cards = [...document.querySelectorAll('.emotion')];
+const searchEl = document.getElementById('search');
+const emptyEl = document.getElementById('empty');
+const countNum = document.getElementById('countNum');
+const countLabel = document.getElementById('countLabel');
+let activeFilter = 'all';
+
+/* Open the verse screen for the chosen feeling */
+cards.forEach(card => {
+    card.addEventListener('click', () => {
+        const name = card.querySelector('.name').textContent;
+        const slug = name.toLowerCase().trim().replace(/\s+/g, '-');
+        card.classList.add('selected');
+        location.href = 'verse.html?e=' + encodeURIComponent(slug);
+    });
+});
+
+/* Filter + search */
+function applyFilters() {
+    const q = searchEl.value.trim().toLowerCase();
+    let shown = 0;
+    cards.forEach(card => {
+        const name = card.querySelector('.name').textContent.toLowerCase();
+        const okGroup = activeFilter === 'all' || card.dataset.group === activeFilter;
+        const okText = !q || name.includes(q);
+        const visible = okGroup && okText;
+        card.style.display = visible ? '' : 'none';
+        if (visible) shown++;
+    });
+    countNum.textContent = shown;
+    countLabel.textContent = shown === 1 ? 'feeling' : 'feelings';
+    emptyEl.classList.toggle('show', shown === 0);
+}
+
+searchEl.addEventListener('input', applyFilters);
+
+document.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+        document.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+        chip.classList.add('on');
+        activeFilter = chip.dataset.filter;
+        applyFilters();
+    });
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#F7F2E8">
+<title>Anxious | Asher</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+<style>
+:root {
+    --cream: #F7F2E8;
+    --card: #FFFCF5;
+    --green: #174735;
+    --green-dark: #103629;
+    --green-soft: #E6EEE7;
+    --gold: #D8AD55;
+    --text: #1D211D;
+    --muted: #77766E;
+    --border: #EAE3D5;
+    --s1: 8px; --s2: 16px; --s3: 24px;
+    --gutter: 22px;
+    --radius: 20px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body { background: #E8E1D4; color: var(--text); font-family: 'DM Sans', sans-serif; -webkit-font-smoothing: antialiased; }
+button, a { font: inherit; color: inherit; }
+button { cursor: pointer; }
+a { text-decoration: none; }
+button:focus-visible, a:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+
+.app {
+    width: 100%; max-width: 430px; min-height: 100vh; margin: auto;
+    background: var(--cream); position: relative; overflow: hidden;
+    padding-bottom: 128px; box-shadow: 0 10px 45px rgba(0,0,0,.10);
+}
+
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes drift { from { transform: scale(1.02); } to { transform: scale(1.1) translate(-1.5%, -1%); } }
+@keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.reveal { opacity: 0; animation: rise .7s cubic-bezier(.2,.7,.2,1) forwards; }
+.d1 { animation-delay: .05s; } .d2 { animation-delay: .2s; } .d3 { animation-delay: .35s; }
+
+/* TOP BAR */
+.topbar { height: 68px; display: flex; align-items: center; justify-content: space-between; padding: 0 var(--gutter); }
+.icon-btn {
+    width: 42px; height: 42px; border: none; border-radius: 50%;
+    background: transparent; font-size: 18px; color: #17221B;
+    display: grid; place-items: center; transition: background .2s, transform .2s, color .2s;
+}
+.icon-btn:hover { background: rgba(23,71,53,.07); }
+.icon-btn:active { transform: scale(.92); }
+.icon-btn.liked { color: var(--green); }
+.topbar h1 { font-family: 'Playfair Display', serif; font-size: 23px; font-weight: 500; letter-spacing: -.3px; }
+.topbar .actions { display: flex; gap: 2px; }
+.topbar .back { margin-left: -8px; }
+
+/* HERO */
+.hero { position: relative; height: 250px; margin: 0 12px; border-radius: 22px; overflow: hidden; background: #CBBF9F; box-shadow: 0 10px 26px rgba(40,50,35,.14); }
+.hero-bg {
+    position: absolute; inset: 0;
+    background:
+        linear-gradient(180deg, rgba(248,244,235,.06) 0%, rgba(248,244,235,0) 45%, rgba(24,35,26,.12) 100%),
+        url('banner3.png') center 48% / cover no-repeat;
+    animation: drift 24s ease-in-out infinite alternate;
+}
+
+/* VERSE CARD */
+.verse-card {
+    position: relative; z-index: 3;
+    margin: -66px var(--gutter) 0;
+    padding: 20px 20px 18px;
+    background: rgba(255,252,245,.98);
+    border: 1px solid rgba(224,215,198,.7);
+    border-radius: 22px;
+    box-shadow: 0 14px 30px rgba(52,45,32,.14);
+}
+.verse-card::before { content: ""; position: absolute; left: 20px; top: 0; width: 34px; height: 3px; border-radius: 0 0 4px 4px; background: var(--gold); }
+.verse-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.verse-head h2 { font-family: 'Playfair Display', serif; font-size: 25px; font-weight: 500; letter-spacing: -.4px; }
+.version {
+    font-size: 10.5px; font-weight: 600; letter-spacing: 1px;
+    padding: 5px 10px; border-radius: 999px;
+    background: var(--cream); border: 1px solid var(--border); color: var(--muted);
+}
+.verse-card blockquote { font-family: 'Playfair Display', serif; font-size: 16px; line-height: 1.6; color: #222922; }
+
+/* TABS */
+.tabs { display: flex; margin: var(--s3) var(--gutter) 0; border-bottom: 1px solid var(--border); position: relative; }
+.tab {
+    flex: 1; padding: 14px 0; border: none; background: transparent;
+    font-size: 14px; font-weight: 500; color: var(--muted); transition: color .2s;
+}
+.tab.on { color: var(--text); font-weight: 600; }
+.tab-line {
+    position: absolute; bottom: -1px; left: 0; height: 2px; width: 33.3333%;
+    background: var(--green); border-radius: 2px; transition: transform .3s cubic-bezier(.2,.7,.2,1);
+}
+
+/* PANELS */
+.panel { display: none; padding: var(--s3) var(--gutter) 0; }
+.panel.on { display: block; animation: fade .45s ease both; }
+
+.block { display: flex; gap: 14px; }
+.block + .block { margin-top: var(--s3); padding-top: var(--s3); border-top: 1px solid var(--border); }
+.b-ico {
+    width: 46px; height: 46px; border-radius: 50%; flex-shrink: 0;
+    background: var(--green-soft); color: var(--green);
+    display: grid; place-items: center; font-size: 18px;
+}
+.block h3 { font-family: 'Playfair Display', serif; font-size: 19px; font-weight: 500; margin-bottom: 6px; }
+.block p { font-size: 14px; line-height: 1.65; color: #3b413b; }
+.block ul { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+.block li { position: relative; padding-left: 18px; font-size: 14px; line-height: 1.55; color: #3b413b; }
+.block li::before { content: ""; position: absolute; left: 2px; top: 8px; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
+
+/* RELATED */
+.related { display: flex; flex-direction: column; gap: 10px; }
+.rel {
+    display: block; padding: 14px 16px;
+    background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+    transition: transform .2s, box-shadow .2s, border-color .2s;
+}
+.rel:hover { transform: translateY(-2px); border-color: #C6BDAA; box-shadow: 0 8px 16px rgba(35,50,37,.08); }
+.rel b { display: flex; align-items: center; justify-content: space-between; font-size: 13px; font-weight: 600; color: var(--green); }
+.rel b i { font-size: 10px; color: var(--muted); }
+.rel p { margin-top: 6px; font-family: 'Playfair Display', serif; font-size: 14.5px; line-height: 1.5; }
+
+/* BOTTOM ACTION BAR */
+.action-bar {
+    position: fixed; z-index: 20; bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 100%; max-width: 430px;
+    padding: 28px var(--gutter) calc(18px + env(safe-area-inset-bottom));
+    background: linear-gradient(180deg, rgba(247,242,232,0) 0%, rgba(247,242,232,.94) 38%, var(--cream) 100%);
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+}
+.btn {
+    height: 56px; border-radius: 16px;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    font-size: 14.5px; font-weight: 600;
+    transition: transform .2s, box-shadow .2s, background .2s;
+}
+.btn:active { transform: scale(.98); }
+.btn.primary { background: var(--green); color: #fff; border: none; box-shadow: 0 10px 20px rgba(23,71,53,.26); }
+.btn.primary:hover { background: var(--green-dark); }
+.btn.ghost { background: var(--card); color: var(--text); border: 1px solid var(--border); box-shadow: 0 6px 14px rgba(52,45,32,.07); }
+.btn.ghost:hover { border-color: #C6BDAA; }
+.btn i { font-size: 16px; }
+
+/* TOAST */
+.toast {
+    position: fixed; left: 50%; bottom: 100px; transform: translate(-50%, 12px);
+    background: var(--green-dark); color: #fff; font-size: 12.5px;
+    padding: 10px 16px; border-radius: 999px; opacity: 0; pointer-events: none;
+    transition: opacity .25s, transform .25s; z-index: 30; white-space: nowrap;
+}
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+@media (max-width: 360px) { .hero { height: 220px; } .verse-card blockquote { font-size: 15px; } }
+@media (min-width: 600px) {
+    body { padding: 20px 0; }
+    .app { border-radius: 25px; min-height: 850px; }
+    .action-bar { bottom: 20px; border-radius: 0 0 25px 25px; }
+}
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } .reveal { opacity: 1; } }
+</style>
+</head>
+
+<body>
+
+<main class="app">
+
+    <!-- TOP BAR -->
+    <header class="topbar reveal d1">
+        <button class="icon-btn back" id="backBtn" aria-label="Back"><i class="fa-solid fa-arrow-left"></i></button>
+        <h1>Anxious</h1>
+        <div class="actions">
+            <button class="icon-btn" id="likeBtn" aria-label="Favourite"><i class="fa-regular fa-heart"></i></button>
+            <button class="icon-btn" id="shareBtn" aria-label="Share"><i class="fa-solid fa-arrow-up-from-bracket"></i></button>
+        </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero reveal d1">
+        <div class="hero-bg" role="img" aria-label="Mountain landscape at sunrise"></div>
+    </section>
+
+    <!-- VERSE CARD -->
+    <section class="verse-card reveal d2">
+        <div class="verse-head">
+            <h2>Philippians 4:6</h2>
+            <span class="version">WEB</span>
+        </div>
+        <blockquote>
+            &ldquo;Be anxious for nothing, but in everything by prayer and supplication with thanksgiving let your requests be made known to God.&rdquo;
+        </blockquote>
+    </section>
+
+    <!-- TABS -->
+    <nav class="tabs reveal d3" role="tablist">
+        <button class="tab on" role="tab" data-tab="reflection">Reflection</button>
+        <button class="tab" role="tab" data-tab="context">Context</button>
+        <button class="tab" role="tab" data-tab="related">Related</button>
+        <span class="tab-line" id="tabLine"></span>
+    </nav>
+
+    <!-- REFLECTION -->
+    <section class="panel on" id="panel-reflection" role="tabpanel">
+        <div class="block">
+            <div class="b-ico"><i class="fa-solid fa-book-open"></i></div>
+            <div>
+                <h3>What this means</h3>
+                <p>Paul reminds us that we don&rsquo;t have to carry our worries alone. We can bring everything to God in prayer, with a heart of trust and gratitude.</p>
+            </div>
+        </div>
+
+        <div class="block">
+            <div class="b-ico"><i class="fa-solid fa-leaf"></i></div>
+            <div>
+                <h3>Reflect for a moment</h3>
+                <ul>
+                    <li>What is worrying you most right now?</li>
+                    <li>Can you surrender it to God in prayer today?</li>
+                    <li>What is one thing you are thankful for even in this situation?</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTEXT -->
+    <section class="panel" id="panel-context" role="tabpanel">
+        <div class="block">
+            <div class="b-ico"><i class="fa-solid fa-scroll"></i></div>
+            <div>
+                <h3>Who wrote this</h3>
+                <p>The apostle Paul wrote to the church in Philippi while he was in prison. Even then, his letter is full of joy and encouragement.</p>
+            </div>
+        </div>
+
+        <div class="block">
+            <div class="b-ico"><i class="fa-solid fa-map-location-dot"></i></div>
+            <div>
+                <h3>Where it fits</h3>
+                <p>This verse sits in Paul&rsquo;s closing words, where he calls believers to rejoice, be gentle and pray. The promise that follows in verse 7 is God&rsquo;s peace guarding the heart and mind.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- RELATED -->
+    <section class="panel" id="panel-related" role="tabpanel">
+        <div class="related">
+            <a class="rel" href="#">
+                <b>1 Peter 5:7 <i class="fa-solid fa-chevron-right"></i></b>
+                <p>&ldquo;Casting all your worries on him, because he cares for you.&rdquo;</p>
+            </a>
+            <a class="rel" href="#">
+                <b>Matthew 6:34 <i class="fa-solid fa-chevron-right"></i></b>
+                <p>&ldquo;Therefore don&rsquo;t be anxious for tomorrow, for tomorrow will be anxious for itself.&rdquo;</p>
+            </a>
+            <a class="rel" href="#">
+                <b>Psalm 94:19 <i class="fa-solid fa-chevron-right"></i></b>
+                <p>&ldquo;In the multitude of my thoughts within me, your comforts delight my soul.&rdquo;</p>
+            </a>
+            <a class="rel" href="#">
+                <b>Isaiah 41:10 <i class="fa-solid fa-chevron-right"></i></b>
+                <p>&ldquo;Don&rsquo;t you be afraid, for I am with you. Don&rsquo;t be dismayed, for I am your God.&rdquo;</p>
+            </a>
+        </div>
+    </section>
+
+    <!-- ACTION BAR -->
+    <div class="action-bar">
+        <button class="btn primary" id="saveBtn"><i class="fa-regular fa-bookmark"></i> <span>Save Verse</span></button>
+        <button class="btn ghost" id="readBtn"><i class="fa-solid fa-book-open"></i> Read Chapter</button>
+    </div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const toast = document.getElementById('toast');
+let toastTimer;
+function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 1800);
+}
+
+/* Back */
+document.getElementById('backBtn').addEventListener('click', () => {
+    if (history.length > 1) history.back(); else location.href = 'viewall.html';
+});
+
+/* Favourite */
+const likeBtn = document.getElementById('likeBtn');
+likeBtn.addEventListener('click', () => {
+    const on = likeBtn.classList.toggle('liked');
+    likeBtn.querySelector('i').className = on ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
+    showToast(on ? 'Added to favourites' : 'Removed from favourites');
+});
+
+/* Share */
+document.getElementById('shareBtn').addEventListener('click', async () => {
+    const text = '\u201CBe anxious for nothing, but in everything by prayer and supplication with thanksgiving let your requests be made known to God.\u201D \u2014 Philippians 4:6 (WEB)';
+    if (navigator.share) {
+        try { await navigator.share({ title: 'Asher', text }); } catch (e) {}
+    } else if (navigator.clipboard) {
+        await navigator.clipboard.writeText(text);
+        showToast('Verse copied');
+    }
+});
+
+/* Save verse */
+const saveBtn = document.getElementById('saveBtn');
+saveBtn.addEventListener('click', () => {
+    const on = saveBtn.classList.toggle('saved');
+    saveBtn.querySelector('i').className = on ? 'fa-solid fa-bookmark' : 'fa-regular fa-bookmark';
+    saveBtn.querySelector('span').textContent = on ? 'Saved' : 'Save Verse';
+    showToast(on ? 'Verse saved' : 'Removed from saved');
+});
+
+document.getElementById('readBtn').addEventListener('click', () => showToast('Opening Philippians 4\u2026'));
+
+/* Tabs */
+const tabs = [...document.querySelectorAll('.tab')];
+const tabLine = document.getElementById('tabLine');
+tabs.forEach((tab, i) => {
+    tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('on'));
+        tab.classList.add('on');
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('on'));
+        document.getElementById('panel-' + tab.dataset.tab).classList.add('on');
+        tabLine.style.transform = 'translateX(' + (i * 100) + '%)';
+    });
+});
+</script>
+
+</body>
+</html>
